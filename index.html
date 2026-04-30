@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PERKALIAN BERSUSUN - By Mathnology</title>
+    <style>
+        /* --- IMPORT FONT KOMIK --- */
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 10px; /* Tambahan padding luar untuk mobile */
+            box-sizing: border-box;
+        }
+        .app-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            position: relative;
+            max-width: 1000px; /* Membatasi lebar maksimal di laptop/layar besar */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- Header Styling --- */
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            transform: rotate(-5deg);
+        }
+        
+        /* --- GAYA TULISAN KOMIK --- */
+        .header-text { 
+            text-align: left; 
+            position: relative;
+        }
+        .header-text h1 { 
+            font-family: 'Bangers', cursive;
+            color: #ffde00; 
+            margin: 0; 
+            font-size: 48px; 
+            letter-spacing: 3px;
+            line-height: 1.1;
+            text-shadow: 
+                -2px -2px 0 #000,  
+                 2px -2px 0 #000,
+                -2px  2px 0 #000,
+                 2px  2px 0 #000,
+                 5px  5px 0px #000,
+                 8px  8px 0px #e53e3e;
+            transform: rotate(-3deg);
+            display: inline-block;
+        }
+        .header-text h3 { 
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            margin: 10px 0 0 5px; 
+            color: #ffffff; 
+            background-color: #4299e1;
+            font-size: 16px; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            padding: 5px 15px;
+            border: 3px solid #000;
+            border-radius: 20px;
+            box-shadow: 4px 4px 0 #000;
+            display: inline-block;
+            transform: rotate(2deg);
+        }
+
+        p.instruction { color: #4a5568; margin-bottom: 15px; font-size: 15px; line-height: 1.5; }
+
+        /* --- Teks Soal Styling --- */
+        .teks-soal {
+            font-size: 22px;
+            color: #2b6cb0;
+            background-color: #edf2f7;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 2px solid #cbd5e0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px; 
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* --- GAYA TOMBOL KOMIK 3D --- */
+        select, button {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            border-radius: 8px;
+            border: 3px solid #000; 
+            cursor: pointer;
+            transition: all 0.1s ease-in-out; 
+            box-shadow: 4px 4px 0px #000;
+            touch-action: manipulation; /* Membantu di mobile */
+        }
+        
+        select { 
+            background-color: #f7fafc; 
+            color: #2d3748; 
+            outline: none; 
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        button:active { 
+            transform: translate(4px, 4px); 
+            box-shadow: 0px 0px 0px #000; 
+        }
+        
+        button:hover { filter: brightness(1.1); }
+
+        .btn-blue { background-color: #4299e1; color: white; text-shadow: 1px 1px 0px #000; }
+        .btn-green { background-color: #48bb78; color: white; text-shadow: 1px 1px 0px #000; }
+        .btn-red { background-color: #e53e3e; color: white; text-shadow: 1px 1px 0px #000; }
+        .btn-orange { background-color: #ed8936; color: white; text-shadow: 1px 1px 0px #000; }
+        
+        /* --- EFEK MODAL/POPUP KOMIK --- */
+        #custom-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            border: 5px solid #000;
+            box-shadow: 12px 12px 0px #000;
+            text-align: center;
+            max-width: 90%;
+            width: 450px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-box h2 {
+            margin-top: 0; font-size: 26px; color: #1a202c; text-transform: uppercase; text-shadow: 1px 1px 0px #cbd5e0;
+        }
+        .modal-inputs {
+            display: flex; justify-content: center; align-items: center; gap: 15px; margin: 25px 0;
+        }
+        .modal-inputs input {
+            padding: 15px 10px; font-size: 24px; font-weight: bold; text-align: center;
+            border: 4px solid #000; border-radius: 8px; box-shadow: 5px 5px 0px #000; outline: none;
+        }
+        .modal-inputs input:focus { background-color: #fffaf0; }
+        .input-atas { width: 110px; }
+        .input-bawah { width: 80px; }
+        .modal-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            user-select: none;
+        }
+
+        .num-input {
+            width: 100%; height: 100%;
+            box-sizing: border-box;
+            border: none;
+            background: transparent; 
+            text-align: center;
+            font-size: 55px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            color: #000;
+            outline: none;
+        }
+        
+        .readonly-soal { color: #2b6cb0; cursor: default; }
+        .input-selectable { cursor: pointer; } 
+
+        .circle-placeholder {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            background-color: #f8f9fa;
+            border: 6px dashed #a0aec0;
+            box-sizing: border-box;
+            cursor: not-allowed;
+            transition: transform 0.2s, background-color 0.3s, border-color 0.3s;
+        }
+        
+        .circle-placeholder.active-signal-green {
+            cursor: pointer;
+            border-style: solid;
+            animation: innerPulseGreen 1.5s infinite;
+        }
+        @keyframes innerPulseGreen {
+            0% { background-color: #f8f9fa; border-color: #a0aec0; box-shadow: inset 0 0 0 rgba(0,0,0,0); }
+            50% { background-color: #1df27d; border-color: #000; box-shadow: inset 0 0 20px rgba(255,255,255,0.7); }
+            100% { background-color: #f8f9fa; border-color: #a0aec0; box-shadow: inset 0 0 0 rgba(0,0,0,0); }
+        }
+
+        .circle-placeholder.active-signal-blue {
+            cursor: pointer;
+            border-style: solid;
+            animation: innerPulseBlue 1.5s infinite;
+        }
+        @keyframes innerPulseBlue {
+            0% { background-color: #f8f9fa; border-color: #a0aec0; box-shadow: inset 0 0 0 rgba(0,0,0,0); }
+            50% { background-color: #94e5ff; border-color: #000; box-shadow: inset 0 0 20px rgba(255,255,255,0.7); }
+            100% { background-color: #f8f9fa; border-color: #a0aec0; box-shadow: inset 0 0 0 rgba(0,0,0,0); }
+        }
+        
+        .circle-placeholder.filled-green { background-color: #1df27d; border: 6px solid #000; }
+        .circle-placeholder.filled-blue { background-color: #94e5ff; border: 6px solid #000; }
+
+        .circle-html-base {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            border: 6px solid #000;
+            box-sizing: border-box;
+            transition: background 0.3s;
+        }
+        .circle-green { background-color: #1df27d; }
+        .circle-blue { background-color: #94e5ff; }
+
+        .bg-inactive {
+            background-color: #94a3b8 !important; 
+            border-color: #475569 !important;
+        }
+
+        .flowing-dash {
+            stroke-dasharray: 20, 20;
+            animation: dashFlow 1.5s linear infinite; 
+            display: none;
+        }
+        @keyframes dashFlow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 40; } }
+
+        #feedback-overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 100px; /* Diperkecil sedikit agar muat di HP */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 50px;
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            text-align: center;
+        }
+        #feedback-overlay.show-feedback { transform: translate(-50%, -50%) scale(1); }
+
+        /* ========================================= */
+        /* --- MEDIA QUERIES UNTUK RESPONSIVITAS --- */
+        /* ========================================= */
+        
+        /* Tablet & Layar Menengah */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 20px 15px;
+            }
+            .header-text h1 {
+                font-size: 38px;
+                letter-spacing: 2px;
+            }
+            .header-logo {
+                width: 65px;
+                height: 65px;
+            }
+            .controls {
+                gap: 10px;
+            }
+            button, select {
+                padding: 10px 12px;
+                font-size: 12px;
+                flex: 1 1 30%; /* Menyebar secara proporsional */
+            }
+            #feedback-overlay {
+                font-size: 80px;
+                padding: 20px 40px;
+            }
+        }
+
+        /* Smartphone Layar Kecil */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 15px 10px;
+            }
+            .header-container {
+                flex-direction: column; /* Ubah orientasi jadi atas-bawah */
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .header-text {
+                text-align: center;
+            }
+            .header-text h1 {
+                font-size: 30px;
+                text-shadow: 
+                    -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+                    3px 3px 0px #000, 5px 5px 0px #e53e3e;
+            }
+            .header-text h3 {
+                font-size: 13px;
+                padding: 4px 10px;
+            }
+            .header-logo {
+                width: 55px;
+                height: 55px;
+            }
+            p.instruction {
+                font-size: 13px;
+                text-align: left;
+            }
+            .teks-soal {
+                font-size: 18px;
+                padding: 8px 15px;
+            }
+            button, select {
+                flex: 1 1 45%; /* Menjadi 2 baris kolom di mobile */
+            }
+            .modal-box {
+                padding: 20px;
+                width: 95%;
+            }
+            .modal-box h2 {
+                font-size: 20px;
+            }
+            .modal-inputs input {
+                font-size: 18px;
+                padding: 10px 5px;
+            }
+            .input-atas { width: 80px; }
+            .input-bawah { width: 60px; }
+            
+            #feedback-overlay {
+                font-size: 50px;
+                padding: 15px 25px;
+                border-radius: 20px;
+            }
+            #feedback-overlay small {
+                font-size: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header-container">
+            <img src="https://raw.githubusercontent.com/dosen-uinsi/PERKALIAN-BERSUSUN/main/PERKALIAN.gif" alt="Logo" class="header-logo">
+            <div class="header-text">
+                <h1>PERKALIAN BERSUSUN</h1>
+                <h3>By Mathnology</h3>
+            </div>
+        </div>
+
+        <p class="instruction">
+            1. Generate acak / input soal sendiri.<br>
+            2. <strong>KLIK KOTAK SOAL (Atas & Bawah) yang ingin dikalikan</strong> untuk membuka gembok kotak jawaban.<br>
+            3. Isi kotak bawah & klik lingkaran atas yang menyala. 4. Cek Jawaban!
+        </p>
+        
+        <div id="teks-soal" class="teks-soal">Soal Saat Ini: -</div>
+
+        <div class="controls">
+            <select id="digit-select">
+                <option value="2">2 Digit</option>
+                <option value="3" selected>3 Digit</option>
+            </select>
+            <button class="btn-blue" onclick="generateSoal()">Soal Acak</button>
+            <button class="btn-orange" onclick="bukaModal()">Input Manual</button>
+            <button class="btn-green" onclick="cekJawaban()">Cek Jawaban</button>
+            <button class="btn-red" onclick="resetApp()">Bersihkan</button>
+        </div>
+
+        <div id="feedback-overlay"></div>
+
+        <svg width="1260" height="1150" viewBox="0 -150 1260 1150" xmlns="http://www.w3.org/2000/svg" id="main-svg">
+            <rect x="0" y="-150" width="1260" height="1150" fill="#ffc0cf" />
+
+            <g id="group-green-pipe">
+                <polyline points="250,140 250,50 1030,50 1030,800 380,800 380,640" fill="none" stroke="#ff0000" stroke-width="38" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="250,140 250,50 1030,50 1030,800 380,800 380,640" fill="none" stroke="#ffff00" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline id="pipe-green-dash" points="250,140 250,50 1030,50 1030,800 380,800 380,640" fill="none" stroke="#333333" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" class="flowing-dash"/>
+                
+                <path d="M145,140 L180,140 M162.5,122.5 L162.5,157.5" stroke="#000000" stroke-width="10" stroke-linecap="round" />
+                <foreignObject x="200" y="90" width="100" height="100">
+                    <div id="drop-green" class="circle-placeholder"><input type="text" id="green-top" class="num-input" readonly></div>
+                </foreignObject>
+                <foreignObject x="330" y="590" width="100" height="100">
+                    <div id="html-base-green" class="circle-html-base circle-green bg-inactive"><input type="text" id="green-bottom" class="num-input" maxlength="1" readonly></div>
+                </foreignObject>
+            </g>
+
+            <polyline points="510,140 960,140 960,750 640,750 640,640" fill="none" stroke="#ff0000" stroke-width="38" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="510,140 960,140 960,750 640,750 640,640" fill="none" stroke="#ffff00" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline id="pipe-blue-dash" points="510,140 960,140 960,750 640,750 640,640" fill="none" stroke="#333333" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" class="flowing-dash"/>
+            
+            <path d="M405,140 L440,140 M422.5,122.5 L422.5,157.5" stroke="#000000" stroke-width="10" stroke-linecap="round" />
+
+            <line x1="30" y1="550" x2="845" y2="550" stroke="#000000" stroke-width="14" stroke-linecap="round" />
+            <path d="M860,525 L910,575 M910,525 L860,575" stroke="#000000" stroke-width="16" stroke-linecap="round" />
+
+            <g id="group-m1">
+                <rect id="rect-m1" x="200" y="220" width="100" height="100" fill="#edf2f7" stroke="#000000" stroke-width="6" rx="10"/>
+                <foreignObject x="200" y="220" width="100" height="100"><input type="text" class="num-input readonly-soal input-selectable" id="m1" readonly onclick="selectBox('m1')"></foreignObject>
+            </g>
+            <rect id="rect-m2" x="460" y="220" width="100" height="100" fill="#edf2f7" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="460" y="220" width="100" height="100"><input type="text" class="num-input readonly-soal input-selectable" id="m2" readonly onclick="selectBox('m2')"></foreignObject>
+            <rect id="rect-m3" x="720" y="220" width="100" height="100" fill="#edf2f7" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="720" y="220" width="100" height="100"><input type="text" class="num-input readonly-soal input-selectable" id="m3" readonly onclick="selectBox('m3')"></foreignObject>
+            <rect id="rect-m4" x="720" y="420" width="100" height="100" fill="#edf2f7" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="720" y="420" width="100" height="100"><input type="text" class="num-input readonly-soal input-selectable" id="m4" readonly onclick="selectBox('m4')"></foreignObject>
+
+            <rect id="rect-r1" x="70" y="590" width="100" height="100" fill="#94a3b8" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="70" y="590" width="100" height="100"><input type="text" maxlength="1" class="num-input" id="r1" readonly></foreignObject>
+            <rect id="rect-r2" x="200" y="590" width="100" height="100" fill="#94a3b8" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="200" y="590" width="100" height="100"><input type="text" maxlength="1" class="num-input" id="r2" readonly></foreignObject>
+            <rect id="rect-r3" x="460" y="590" width="100" height="100" fill="#94a3b8" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="460" y="590" width="100" height="100"><input type="text" maxlength="1" class="num-input" id="r3" readonly></foreignObject>
+            <rect id="rect-r4" x="720" y="590" width="100" height="100" fill="#94a3b8" stroke="#000000" stroke-width="6" rx="10"/>
+            <foreignObject x="720" y="590" width="100" height="100"><input type="text" maxlength="1" class="num-input" id="r4" readonly></foreignObject>
+
+            <foreignObject x="460" y="90" width="100" height="100">
+                <div id="drop-blue" class="circle-placeholder"><input type="text" id="blue-top" class="num-input" readonly></div>
+            </foreignObject>
+            <foreignObject x="590" y="590" width="100" height="100">
+                <div id="html-base-blue" class="circle-html-base circle-blue bg-inactive"><input type="text" id="blue-bottom" class="num-input" maxlength="1" readonly></div>
+            </foreignObject>
+            
+            <g id="moving-clone" style="display:none"></g>
+        </svg>
+    </div>
+
+    <div id="custom-modal">
+        <div class="modal-box">
+            <h2>Buat Soal Sendiri</h2>
+            <div class="modal-inputs">
+                <input type="number" id="input-atas" class="input-atas" placeholder="456" title="Angka Atas (10-999)">
+                <span style="font-size: 30px; font-weight: 900;">×</span>
+                <input type="number" id="input-bawah" class="input-bawah" placeholder="3" title="Angka Bawah (2-9)">
+            </div>
+            <p style="color: #4a5568; font-size: 13px; margin-top: -10px;">Atas: 2/3 Digit | Bawah: 1 Digit</p>
+            <div class="modal-buttons">
+                <button class="btn-green" onclick="terapkanSoalManual()">Terapkan Soal</button>
+                <button class="btn-red" onclick="tutupModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputElements = {
+            green: { bot: 'green-bottom', top: 'green-top', drop: 'drop-green', dash: 'pipe-green-dash' },
+            blue: { bot: 'blue-bottom', top: 'blue-top', drop: 'drop-blue', dash: 'pipe-blue-dash' }
+        };
+
+        const paths = {
+            green: [ {x: 380, y: 640}, {x: 380, y: 800}, {x: 1030, y: 800}, {x: 1030, y: 50}, {x: 250, y: 50}, {x: 250, y: 140} ],
+            blue: [ {x: 640, y: 640}, {x: 640, y: 750}, {x: 960, y: 750}, {x: 960, y: 140}, {x: 510, y: 140} ]
+        };
+
+        let activeTop = null; 
+        let activeBottom = false; 
+
+        window.onload = () => generateSoal();
+
+        document.querySelectorAll('.num-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, ''); 
+                let color = this.id.split('-')[0];
+                if (inputElements[color] && this.id.includes('-bottom')) {
+                    const els = inputElements[color];
+                    const dropzone = document.getElementById(els.drop);
+                    const pipeDash = document.getElementById(els.dash);
+                    if (this.value !== '') {
+                        pipeDash.style.display = 'block';           
+                        dropzone.classList.add('active-signal-' + color); 
+                    } else {
+                        pipeDash.style.display = 'none';
+                        dropzone.classList.remove('active-signal-' + color);
+                        document.getElementById(els.top).value = '';
+                        dropzone.classList.remove(`filled-${color}`);
+                    }
+                }
+            });
+        });
+
+        // Filter modal inputs to numbers only
+        document.getElementById('input-atas').addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+        document.getElementById('input-bawah').addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+
+        ['drop-green', 'drop-blue'].forEach(id => {
+            document.getElementById(id).addEventListener('click', function() {
+                let color = this.id.split('-')[1];
+                if (this.classList.contains('active-signal-' + color)) {
+                    runPathAnimation(color);
+                }
+            });
+        });
+
+        // --- FUNGSI MODAL INPUT MANUAL ---
+        function bukaModal() {
+            document.getElementById('custom-modal').style.display = 'flex';
+            document.getElementById('input-atas').value = '';
+            document.getElementById('input-bawah').value = '';
+            document.getElementById('input-atas').focus();
+        }
+
+        function tutupModal() {
+            document.getElementById('custom-modal').style.display = 'none';
+        }
+
+        function terapkanSoalManual() {
+            let valA = parseInt(document.getElementById('input-atas').value);
+            let valB = parseInt(document.getElementById('input-bawah').value);
+
+            if (isNaN(valA) || isNaN(valB)) return alert('Harap isi kedua angka terlebih dahulu!');
+            if (valA < 10 || valA > 999) return alert('Angka atas harus berupa 2 atau 3 digit (10 sampai 999)!');
+            if (valB < 2 || valB > 9) return alert('Angka bawah/pengali harus 1 digit (2 sampai 9)!');
+
+            resetApp();
+            let aStr = valA.toString();
+
+            if (aStr.length === 2) {
+                document.getElementById('digit-select').value = '2';
+                document.getElementById('m1').value = '';
+                document.getElementById('m2').value = aStr[0];
+                document.getElementById('m3').value = aStr[1];
+                document.getElementById('group-m1').style.display = 'none';
+                document.getElementById('group-green-pipe').style.display = 'none';
+            } else {
+                document.getElementById('digit-select').value = '3';
+                document.getElementById('m1').value = aStr[0];
+                document.getElementById('m2').value = aStr[1];
+                document.getElementById('m3').value = aStr[2];
+                document.getElementById('group-m1').style.display = 'block';
+                document.getElementById('group-green-pipe').style.display = 'block';
+            }
+            
+            document.getElementById('m4').value = valB;
+            document.getElementById('teks-soal').innerHTML = `Soal Saat Ini: <strong>${valA} × ${valB}</strong>`;
+            
+            tutupModal();
+            updateActiveState();
+        }
+
+        // --- FUNGSI SELEKSI KOTAK SOAL ---
+        function selectBox(id) {
+            if (id === 'm4') {
+                activeBottom = !activeBottom; 
+            } else {
+                if (activeTop === id) activeTop = null; 
+                else activeTop = id;
+            }
+            updateActiveState();
+        }
+
+        function updateActiveState() {
+            ['m1', 'm2', 'm3', 'm4'].forEach(id => {
+                let rect = document.getElementById('rect-' + id);
+                if (rect) rect.setAttribute('stroke', '#000000');
+            });
+            
+            if (activeTop) {
+                let rect = document.getElementById('rect-' + activeTop);
+                if (rect) rect.setAttribute('stroke', '#ff8c00');
+            }
+            if (activeBottom) {
+                let rect = document.getElementById('rect-m4');
+                if (rect) rect.setAttribute('stroke', '#ff8c00');
+            }
+
+            lockTarget('r1', 'rect-r1');
+            lockTarget('r2', 'rect-r2');
+            lockTarget('r3', 'rect-r3');
+            lockTarget('r4', 'rect-r4');
+            lockCircle('green-bottom', 'html-base-green');
+            lockCircle('blue-bottom', 'html-base-blue');
+
+            let d = document.getElementById('digit-select').value;
+            if (activeBottom) {
+                if (activeTop === 'm3') {
+                    unlockTarget('r4', 'rect-r4');
+                    unlockCircle('blue-bottom', 'html-base-blue');
+                } else if (activeTop === 'm2') {
+                    if (d === '2') {
+                        unlockTarget('r2', 'rect-r2');
+                        unlockTarget('r3', 'rect-r3');
+                    } else {
+                        unlockTarget('r3', 'rect-r3');
+                        unlockCircle('green-bottom', 'html-base-green');
+                    }
+                } else if (activeTop === 'm1' && d === '3') {
+                    unlockTarget('r1', 'rect-r1');
+                    unlockTarget('r2', 'rect-r2');
+                }
+            }
+        }
+
+        function lockTarget(inputId, rectId) {
+            let inp = document.getElementById(inputId);
+            let rect = document.getElementById(rectId);
+            if (inp) { 
+                inp.readOnly = true; 
+                inp.style.cursor = 'not-allowed'; 
+                if (rect) {
+                    if (inp.value !== '') rect.setAttribute('fill', '#ffffff'); 
+                    else rect.setAttribute('fill', '#94a3b8'); 
+                }
+            }
+        }
+
+        function unlockTarget(inputId, rectId) {
+            let inp = document.getElementById(inputId);
+            let rect = document.getElementById(rectId);
+            if (inp) { inp.readOnly = false; inp.style.cursor = 'text'; }
+            if (rect) rect.setAttribute('fill', '#ffffff');
+        }
+
+        function lockCircle(inputId, divId) {
+            let inp = document.getElementById(inputId);
+            let div = document.getElementById(divId);
+            if (inp) { 
+                inp.readOnly = true; 
+                inp.style.cursor = 'not-allowed'; 
+                if (div) {
+                    if (inp.value !== '') div.classList.remove('bg-inactive'); 
+                    else div.classList.add('bg-inactive'); 
+                }
+            }
+        }
+
+        function unlockCircle(inputId, divId) {
+            let inp = document.getElementById(inputId);
+            let div = document.getElementById(divId);
+            if (inp) { inp.readOnly = false; inp.style.cursor = 'text'; }
+            if (div) div.classList.remove('bg-inactive');
+        }
+
+        // --- ANIMASI PIPA ---
+        function runPathAnimation(color) {
+            const els = inputElements[color];
+            const sourceInput = document.getElementById(els.bot);
+            const val = sourceInput.value;
+            if (!val) return;
+
+            document.getElementById(els.drop).classList.remove('active-signal-' + color);
+            sourceInput.value = '';
+            
+            const clone = document.getElementById('moving-clone');
+            clone.innerHTML = `<circle cx="0" cy="0" r="50" fill="${color==='green'?'#1df27d':'#94e5ff'}" stroke="#000" stroke-width="6"/><text y="20" font-size="55" font-weight="bold" text-anchor="middle" font-family="Arial">${val}</text>`;
+            clone.style.display = 'block';
+
+            const path = paths[color];
+            let start = null;
+            const duration = color === 'green' ? 3000 : 2000; 
+
+            function animate(time) {
+                if (!start) start = time;
+                let progress = (time - start) / duration;
+                if (progress > 1) progress = 1;
+
+                const totalDist = path.reduce((acc, p, i) => i === 0 ? 0 : acc + Math.hypot(p.x - path[i-1].x, p.y - path[i-1].y), 0);
+                let currentDist = progress * totalDist;
+                let traversed = 0;
+                let pos = path[0];
+
+                for (let i = 1; i < path.length; i++) {
+                    let d = Math.hypot(path[i].x - path[i-1].x, path[i].y - path[i-1].y);
+                    if (traversed + d >= currentDist) {
+                        let segP = (currentDist - traversed) / d;
+                        pos = { x: path[i-1].x + (path[i].x - path[i-1].x) * segP, y: path[i-1].y + (path[i].y - path[i-1].y) * segP };
+                        break;
+                    }
+                    traversed += d;
+                }
+
+                clone.setAttribute('transform', `translate(${pos.x},${pos.y})`);
+                if (progress < 1) requestAnimationFrame(animate);
+                else {
+                    document.getElementById(els.top).value = val;
+                    document.getElementById(els.drop).classList.add(`filled-${color}`);
+                    document.getElementById(els.dash).style.display = 'none';
+                    clone.style.display = 'none';
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // --- GENERATE SOAL ACAK ---
+        function generateSoal() {
+            resetApp();
+            let d = document.getElementById('digit-select').value;
+            
+            let v2 = Math.floor(Math.random() * 9) + 1;
+            let v3 = Math.floor(Math.random() * 10);
+            let v4 = Math.floor(Math.random() * 8) + 2;
+
+            document.getElementById('m2').value = v2;
+            document.getElementById('m3').value = v3;
+            document.getElementById('m4').value = v4;
+
+            let textAtas = "";
+
+            if (d === '3') {
+                let v1 = Math.floor(Math.random() * 9) + 1;
+                document.getElementById('m1').value = v1;
+                document.getElementById('group-m1').style.display = 'block';
+                document.getElementById('group-green-pipe').style.display = 'block';
+                textAtas = `${v1}${v2}${v3}`;
+            } else {
+                document.getElementById('m1').value = '';
+                document.getElementById('group-m1').style.display = 'none';
+                document.getElementById('group-green-pipe').style.display = 'none';
+                textAtas = `${v2}${v3}`;
+            }
+
+            document.getElementById('teks-soal').innerHTML = `Soal Saat Ini: <strong>${textAtas} × ${v4}</strong>`;
+            
+            updateActiveState();
+        }
+
+        // --- CEK JAWABAN ---
+        function cekJawaban() {
+            let m1 = parseInt(document.getElementById('m1').value) || 0;
+            let m2 = parseInt(document.getElementById('m2').value) || 0;
+            let m3 = parseInt(document.getElementById('m3').value) || 0;
+            let m4 = parseInt(document.getElementById('m4').value) || 0;
+            
+            let numAtas = parseInt(`${m1 ? m1 : ''}${m2}${m3}`);
+            let correct = numAtas * m4;
+            
+            let user = parseInt((document.getElementById('r1').value||'0')+(document.getElementById('r2').value||'0')+(document.getElementById('r3').value||'0')+(document.getElementById('r4').value||'0'));
+            
+            let f = document.getElementById('feedback-overlay');
+            f.innerHTML = user === correct ? '👍<br><small style="font-size:30px">BENAR!</small>' : '😢<br><small style="font-size:30px">COBA LAGI</small>';
+            f.classList.add('show-feedback');
+            setTimeout(() => f.classList.remove('show-feedback'), 2000);
+        }
+
+        // --- RESET APP ---
+        function resetApp() {
+            document.querySelectorAll('.num-input').forEach(i => { if(!i.readOnly && !i.classList.contains('readonly-soal')) i.value = ''; });
+            ['drop-green', 'drop-blue'].forEach(id => document.getElementById(id).className = 'circle-placeholder');
+            document.querySelectorAll('.flowing-dash').forEach(d => d.style.display = 'none');
+            document.getElementById('green-top').value = '';
+            document.getElementById('blue-top').value = '';
+            
+            activeTop = null;
+            activeBottom = false;
+            updateActiveState();
+        }
+    </script>
+</body>
+</html>
