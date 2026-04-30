@@ -94,10 +94,10 @@
         .btn-red { background-color: #e53e3e; color: white; text-shadow: 1px 1px 0px #000; }
         .btn-orange { background-color: #ed8936; color: white; text-shadow: 1px 1px 0px #000; }
         
-        /* --- GAYA NUMPAD (Diperbarui marginnya) --- */
+        /* --- GAYA NUMPAD --- */
         .numpad-container {
             display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
-            margin: 25px auto 10px auto; /* Margin atas 25px agar berjarak dari kotak pink */
+            margin: 25px auto 10px auto; 
             max-width: 600px;
             background: #edf2f7; padding: 15px; border-radius: 12px; border: 4px solid #000;
         }
@@ -225,13 +225,13 @@
         </div>
 
         <p class="instruction">
-            1. <strong>Klik Kotak Soal</strong> yang ingin dikalikan.<br>
-            2. <strong>Pilih kotak jawaban (putih) atau lingkaran</strong> untuk mengisi angka.<br>
-            3. <strong>Gunakan Tombol Angka (Numpad)</strong> di bawah untuk menjawab!<br>
-            <em>*Note: Angka di lingkaran bisa diterbangkan ke atas dengan mengklik lingkaran atasnya (opsional).</em>
+            1. Generate acak / input soal sendiri.<br>
+            2. <strong>KLIK KOTAK SOAL (Atas & Bawah)</strong> yang ingin dikalikan untuk membuka gembok kotak jawaban.<br>
+            3. Isi kotak bawah & klik lingkaran atas yang menyala.<br>
+            4. Cek Jawaban!
         </p>
         
-        <div id="teks-soal" class="teks-soal">Soal Saat Ini: -</div>
+        <div id="teks-soal" class="teks-soal">Soal: -</div>
 
         <div class="controls">
             <select id="digit-select">
@@ -351,13 +351,11 @@
 
         let activeTop = null; 
         let activeBottom = false; 
-        
-        // --- VARIABEL UNTUK NUMPAD ---
         let activeInputBox = null;
+        let animationReqId = null; 
 
         window.onload = () => generateSoal();
 
-        // Mengizinkan pengetikan dari keyboard biasa, terhubung dengan animasi pipa
         document.querySelectorAll('.num-input').forEach(input => {
             input.addEventListener('input', function() {
                 this.value = this.value.replace(/[^0-9]/g, ''); 
@@ -382,20 +380,15 @@
         // --- FUNGSI NUMPAD ---
         function setActiveInput(el) {
             if (el.readOnly) return;
-            // Hapus kelas aktif dari semua input
             document.querySelectorAll('.num-input').forEach(inp => inp.classList.remove('input-active-target'));
-            // Tambahkan kelas aktif ke input yang diklik
             el.classList.add('input-active-target');
             activeInputBox = el;
-            
-            // Cegah keyboard bawaan hp muncul (meski sudah ada inputmode="none", ini untuk memastikan)
             el.blur();
         }
 
         function numpadPress(num) {
             if (activeInputBox && !activeInputBox.readOnly) {
                 activeInputBox.value = num;
-                // Picu event 'input' agar animasi pipa dan logika lainnya berjalan
                 activeInputBox.dispatchEvent(new Event('input'));
             }
         }
@@ -407,7 +400,6 @@
             }
         }
 
-        // Filter modal inputs to numbers only
         document.getElementById('input-atas').addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
         document.getElementById('input-bawah').addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
 
@@ -420,7 +412,7 @@
             });
         });
 
-        // --- FUNGSI MODAL INPUT MANUAL ---
+        // --- FUNGSI MODAL ---
         function bukaModal() {
             document.getElementById('custom-modal').style.display = 'flex';
             document.getElementById('input-atas').value = '';
@@ -460,7 +452,7 @@
             }
             
             document.getElementById('m4').value = valB;
-            document.getElementById('teks-soal').innerHTML = `Soal Saat Ini: <strong>${valA} × ${valB}</strong>`;
+            document.getElementById('teks-soal').innerHTML = `Soal: <strong>${valA} × ${valB}</strong>`;
             
             tutupModal();
             updateActiveState();
@@ -501,7 +493,6 @@
 
             let d = document.getElementById('digit-select').value;
             if (activeBottom) {
-                // Saat user memilih m3 * m4, kotak R4 dan lingkaran Biru langsung terbuka bersamaan
                 if (activeTop === 'm3') {
                     unlockTarget('r4', 'rect-r4');
                     unlockCircle('blue-bottom', 'html-base-blue');
@@ -526,7 +517,7 @@
             if (inp) { 
                 inp.readOnly = true; 
                 inp.style.cursor = 'not-allowed'; 
-                inp.classList.remove('input-active-target'); // Reset status seleksi numpad
+                inp.classList.remove('input-active-target'); 
                 if (activeInputBox === inp) activeInputBox = null;
 
                 if (rect) {
@@ -549,7 +540,7 @@
             if (inp) { 
                 inp.readOnly = true; 
                 inp.style.cursor = 'not-allowed'; 
-                inp.classList.remove('input-active-target'); // Reset status seleksi numpad
+                inp.classList.remove('input-active-target'); 
                 if (activeInputBox === inp) activeInputBox = null;
 
                 if (div) {
@@ -575,7 +566,6 @@
 
             document.getElementById(els.drop).classList.remove('active-signal-' + color);
             sourceInput.value = '';
-            // Reset state numpad jika kotak bawah di-animasikan
             sourceInput.classList.remove('input-active-target');
             if(activeInputBox === sourceInput) activeInputBox = null;
             
@@ -608,15 +598,18 @@
                 }
 
                 clone.setAttribute('transform', `translate(${pos.x},${pos.y})`);
-                if (progress < 1) requestAnimationFrame(animate);
-                else {
+                
+                if (progress < 1) {
+                    animationReqId = requestAnimationFrame(animate);
+                } else {
                     document.getElementById(els.top).value = val;
                     document.getElementById(els.drop).classList.add(`filled-${color}`);
                     document.getElementById(els.dash).style.display = 'none';
                     clone.style.display = 'none';
+                    animationReqId = null;
                 }
             }
-            requestAnimationFrame(animate);
+            animationReqId = requestAnimationFrame(animate);
         }
 
         // --- GENERATE SOAL ACAK ---
@@ -647,7 +640,7 @@
                 textAtas = `${v2}${v3}`;
             }
 
-            document.getElementById('teks-soal').innerHTML = `Soal Saat Ini: <strong>${textAtas} × ${v4}</strong>`;
+            document.getElementById('teks-soal').innerHTML = `Soal: <strong>${textAtas} × ${v4}</strong>`;
             
             updateActiveState();
         }
@@ -672,18 +665,33 @@
 
         // --- RESET APP ---
         function resetApp() {
+            if (animationReqId) {
+                cancelAnimationFrame(animationReqId);
+                animationReqId = null;
+            }
+
+            ['r1', 'r2', 'r3', 'r4', 'green-bottom', 'blue-bottom', 'green-top', 'blue-top'].forEach(id => {
+                let el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+
             document.querySelectorAll('.num-input').forEach(i => { 
-                if(!i.readOnly && !i.classList.contains('readonly-soal')) i.value = ''; 
                 i.classList.remove('input-active-target');
             });
-            ['drop-green', 'drop-blue'].forEach(id => document.getElementById(id).className = 'circle-placeholder');
+
+            ['drop-green', 'drop-blue'].forEach(id => {
+                let el = document.getElementById(id);
+                if (el) el.className = 'circle-placeholder';
+            });
+
             document.querySelectorAll('.flowing-dash').forEach(d => d.style.display = 'none');
-            document.getElementById('green-top').value = '';
-            document.getElementById('blue-top').value = '';
-            
+            let clone = document.getElementById('moving-clone');
+            if (clone) clone.style.display = 'none';
+
             activeTop = null;
             activeBottom = false;
             activeInputBox = null;
+            
             updateActiveState();
         }
     </script>
